@@ -20,7 +20,7 @@ def signup_user(user:CreateUser,db: Session = Depends(get_db)):
     # extract the data thats coming from request
     print(user.name)
     print(user.email)
-    print(user.password)
+
     # check if the user already exists in db
     user_db= db.query(User).filter(User.email==user.email).first()
 
@@ -58,7 +58,6 @@ def login_user(user:LoginUser ,db: Session = Depends(get_db)):
 
     load_dotenv()
     PASSWORD_KEY = os.getenv("PASSWORD_KEY")
-    print(PASSWORD_KEY)
     token = jwt.encode({'id': user_db.id}, PASSWORD_KEY)                  # password key ko env mei dalna hai
 
     return {'token': token, 'user': user_db}

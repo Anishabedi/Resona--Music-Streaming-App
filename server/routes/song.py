@@ -10,16 +10,18 @@ from sqlalchemy.orm import joinedload
 from models.favourite import Favourite
 from sqlalchemy import or_
 import uuid
+import os
+from dotenv import load_dotenv
 
 router = APIRouter()
 
+load_dotenv()
 
 cloudinary.config(
-  cloud_name = "nhvsn3ja",
-  api_key = "533172935384926",
-  api_secret = "FSFLZoo_AHCSuM4f-itI6Dl0FNU",              # env mei dalna hai
+      cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+      api_key=os.getenv("CLOUDINARY_API_KEY"),
+      api_secret=os.getenv("CLOUDINARY_API_SECRET"),              # env mei dalna hai
 )
-
 
 @router.post('/upload', status_code = 201)
 def upload_song(song: UploadFile = File(...),
@@ -31,8 +33,8 @@ def upload_song(song: UploadFile = File(...),
                 auth_dict=Depends(auth_middleware)
                 ):
     song_id = str(uuid.uuid4())
-    song_res = cloudinary.uploader.upload(song.file, resource_type='auto', folder='songs/{song_id}')
-    thumbnail_res = cloudinary.uploader.upload(thumbnail.file, resource_type='image', folder='songs/{song_id}')
+    song_res = cloudinary.uploader.upload(song.file, resource_type='auto', folder=f'songs/{song_id}')
+    thumbnail_res = cloudinary.uploader.upload(thumbnail.file, resource_type='image', folder=f'songs/{song_id}')
 
 
     new_song = Song(
