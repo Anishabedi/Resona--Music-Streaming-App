@@ -5,13 +5,14 @@ import os
 
 load_dotenv()
 PASSWORD_KEY = os.getenv("PASSWORD_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
 def auth_middleware(x_auth_token = Header()):
     try:
         # get the use token from header
         if not x_auth_token:
             raise HTTPException(401,'No auth token, access denied!')
         # decode token
-        verified_token = jwt.decode(x_auth_token, PASSWORD_KEY,['HS256'])
+        verified_token = jwt.decode(x_auth_token, PASSWORD_KEY, algorithms=[ALGORITHM])
 
         if not verified_token:
             raise HTTPException(401,'Token verified failed,authorization denied!')
